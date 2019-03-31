@@ -1,6 +1,7 @@
 package com.sienna.postertracker.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +21,35 @@ import com.sienna.postertracker.repository.TeammateRepository;
 @RequestMapping("api/v1/")
 public class TeammateController {
 
-	@Autowired
+	Logger log = Logger.getLogger(TeammateController.class.getName());
+	
 	TeammateRepository repository;
+	
+	TeammateController(TeammateRepository repository) {
+		this.repository = repository;
+	}
 	
 	@GetMapping("teammates/get")
     public List<Teammate> all() {
+		log.info("all()");
         return repository.findAll();
     }
+	
+	@GetMapping("teammates/get/roster")
+	public List<Teammate> allRoster() {
+		log.info("allRoster()");
+		System.out.println("allRoster");
+		return repository.getRoster();
+	}
 	
 	@GetMapping("teammate/get/{id}")
 	public Teammate getOneById(@PathVariable Long id) {
 		return repository.getOneById(id);	
 	}
 	
-	@PostMapping("teammate/create")
-    public Teammate create(@RequestParam Teammate teammate) {
-        return repository.saveAndFlush(teammate);
+	@PostMapping("teammates/create")
+    public Teammate create(@RequestBody Teammate teammate) {
+        return repository.save(teammate);
     }
 	
 	@PutMapping("teammate/update/{id}")
